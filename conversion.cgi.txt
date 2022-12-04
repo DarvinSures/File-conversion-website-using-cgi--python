@@ -1,0 +1,382 @@
+# DARVIN SURESKUMAR conversion.cgi
+
+# PSEUDOCODE:
+# This file accepts the user input and user choice.
+# The function is called based on what choice is made.
+# The function first finds the important information in the file like id and sequence.
+# Once found, the function prints the information in the correct format.
+#-------------------------------------------------------
+
+#!/usr/bin/python
+# Import modules for CGI handling
+import cgi, cgitb
+import re
+# Create instance of FieldStorage
+form = cgi.FieldStorage()
+
+uMoltype = form.getvalue('moltype')
+files = form.getvalue('file')
+type = form.getvalue('number')
+
+def fasta2genbank(file):
+	version = re.findall(r'>(.*?):', files)
+	#print (version)
+	idstr = re.findall (r'>([A-Z]+_[0-9]+)', files)
+        #print (idstr)
+        seq = re.findall (r'[ACGT_]{3,}', files)
+	seq = ''.join(seq)
+	#print(seq)
+	length = len(''.join(seq))
+	#print (length)
+        #firstline = re.findall (r'>(.*)', files)
+	#print (firstline)
+	species = re.findall (r'[A-Z]{1}[a-z]+\s[a-z]+', files)
+	#print (species)
+	source = re.findall (r'[A-Z]{1}[a-z]+\s[a-z]+\s\d+', files)
+	#print (source)
+	print "<br><br><br>";
+	print "LOCUS &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp %s \n" % (''.join(idstr))
+	print "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"
+	print " %s  bp &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp DNA &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp   Linear \n" % (length)
+	print "<br>";
+	print "ACCESSION &nbsp&nbsp&nbsp %s \t" % (''.join(species))
+	print "<br>";
+	print "Source &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"
+	print " %s \n" %(''.join(source)) 
+	print "<br>";
+	print "ORIGIN"
+	print "<br>";
+
+	splitseq = []
+	max = 10
+
+	for i in range(0,len(seq),10):
+		splitseq.append(seq[i:i+max])
+			
+	#print (splitseq)		
+	
+	print ("&nbsp&nbsp&nbsp")
+	print '1'
+	print ("&nbsp&nbsp&nbsp")
+	print (splitseq[0] + "&nbsp&nbsp&nbsp" + splitseq[1] + "&nbsp&nbsp&nbsp" + splitseq[2] + "&nbsp&nbsp&nbsp" + splitseq[3] + "&nbsp&nbsp&nbsp" + splitseq[4] + "&nbsp&nbsp&nbsp" + splitseq[5] + "&nbsp&nbsp&nbsp")
+	print "<br>";
+	print ("&nbsp&nbsp&nbsp")
+	print '61'
+	print (splitseq[6] + "&nbsp&nbsp&nbsp" + splitseq[7] + "&nbsp&nbsp&nbsp" + splitseq[8] + "&nbsp&nbsp&nbsp" + splitseq[9] + "&nbsp&nbsp&nbsp" + splitseq[10] + "&nbsp&nbsp&nbsp" + splitseq[11])
+	print ("&nbsp&nbsp&nbsp")
+	print "<br>";
+	print ("&nbsp&nbsp&nbsp")
+        print '121'
+        print (splitseq[12] + "&nbsp&nbsp&nbsp" + splitseq[13] + "&nbsp&nbsp&nbsp" + splitseq[14] + "&nbsp&nbsp&nbsp" + splitseq[15] + "&nbsp&nbsp&nbsp" + splitseq[16] + "&nbsp&nbsp&nbsp" + splitseq[17])
+	print ("&nbsp&nbsp&nbsp")
+	print "<br>";
+	print ("&nbsp&nbsp&nbsp")
+        print '181'
+        print (splitseq[18] + "&nbsp&nbsp&nbsp" + splitseq[19] + "&nbsp&nbsp&nbsp" + splitseq[20] + "&nbsp&nbsp&nbsp" + splitseq[21] + "&nbsp&nbsp&nbsp" + splitseq[22] + "&nbsp&nbsp&nbsp" + splitseq[23])
+	print ("&nbsp&nbsp&nbsp")
+	print "<br>";
+	print ("&nbsp&nbsp&nbsp")
+        print '241'
+        print (splitseq[24] + "&nbsp&nbsp&nbsp" + splitseq[25] + "&nbsp&nbsp&nbsp" + splitseq[26] + "&nbsp&nbsp&nbsp" + splitseq[27] + "&nbsp&nbsp&nbsp" + splitseq[28] )
+	print "<br>";
+	print "//"
+
+
+
+def genbank2fasta(files):
+	defi = re.findall(r'(?<=DEFINITION ).*', files)
+	#print (''.join(defi))
+	idstr = re.findall (r'\s[A-Z]{2}_[0-9]{6}', files)
+	#print(idstr[1])
+	wo_space = re.sub('[\s]', '', files)
+	#print(wo_space) 
+	seq_gb = '(ORIGIN)(.*)(\/\/$)' 
+	seqline = re.search(seq_gb, wo_space)	
+	if seqline:
+		seq = seqline.group(2) 
+		seq = re.sub('[\d]', '',seq)
+		#print(seq) 
+	else:
+		seq = "nope"
+	print '<br>';
+        print ('>' + '%s' + '&nbsp&nbsp&nbsp' + '%s') % (''.join(idstr),''.join(defi))
+        print '<br>';
+        for i in range (0,len(seq), 60):
+                print(seq[i:i+60])
+                print('\n')
+	
+def genbank2gcg (files):
+        defi = re.findall(r'(?<=DEFINITION ).*', files)
+        #print (''.join(defi))
+        idstr = re.findall (r'\s[A-Z]{2}_[0-9]{6}', files)
+        #print(idstr[1])
+        wo_space = re.sub('[\s]', '', files)
+        #print(wo_space)
+        seq_gb = '(ORIGIN)(.*)(\/\/$)'
+        seqline = re.search(seq_gb, wo_space)
+        if seqline:
+                seq = seqline.group(2)
+                seq = re.sub('[\d]', '',seq)
+                print(seq)
+        else:
+                seq = "nope"
+        print '<br>';
+	length = len(seq)
+	#print(length)
+	print ("!!" + "%s" + "&nbsp&nbsp&nbsp&nbsp" ) % (''.join(idstr[1]))
+
+        print "<br>";
+        print ("HSFAU"  + "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp" + "Length : %s") % (length)
+        print ("&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp" + 'Type : N')
+
+        splitseq = []
+        max = 10
+        for i in range(0,len(seq),10):
+                splitseq.append(seq[i:i+max])
+
+        #print (splitseq)
+
+        print "<br>";
+        print ("&nbsp&nbsp&nbsp")
+        print '1'
+        print ("&nbsp&nbsp&nbsp")
+        print (splitseq[0] + "&nbsp&nbsp&nbsp" + splitseq[1] + "&nbsp&nbsp&nbsp" + splitseq[2] + "&nbsp&nbsp&nbsp" + splitseq[3] + "&nbsp&nbsp&nbsp" + splitseq[4] + "&nbsp&nbsp&nbsp" + splitseq[5] + "&nbsp&nbsp&nbsp")
+        print "<br>";
+        print ("&nbsp&nbsp&nbsp")
+        print '61'
+        print (splitseq[6] + "&nbsp&nbsp&nbsp" + splitseq[7] + "&nbsp&nbsp&nbsp" + splitseq[8] + "&nbsp&nbsp&nbsp" + splitseq[9] + "&nbsp&nbsp&nbsp" + splitseq[10] + "&nbsp&nbsp&nbsp" + splitseq[11])
+        print ("&nbsp&nbsp&nbsp")
+        print "<br>";
+        print ("&nbsp&nbsp&nbsp")
+        print '121'
+        print (splitseq[12] + "&nbsp&nbsp&nbsp" + splitseq[13] + "&nbsp&nbsp&nbsp" + splitseq[14] + "&nbsp&nbsp&nbsp" + splitseq[15] + "&nbsp&nbsp&nbsp" + splitseq[16] + "&nbsp&nbsp&nbsp" + splitseq[17])
+        print ("&nbsp&nbsp&nbsp")
+        print "<br>";
+        print ("&nbsp&nbsp&nbsp")
+        print '181'
+        print (splitseq[18] + "&nbsp&nbsp&nbsp" + splitseq[19] + "&nbsp&nbsp&nbsp" + splitseq[20] + "&nbsp&nbsp&nbsp" + splitseq[21] + "&nbsp&nbsp&nbsp" + splitseq[22] + "&nbsp&nbsp&nbsp" + splitseq[23])
+
+
+
+def fasta2gcg(file):
+	seq = re.findall (r'[ACGT_]{3,}', files)
+        seq = ''.join(seq)
+        #print(seq)
+        length = len(''.join(seq))
+	#print (length)
+	species = re.findall (r'[A-Z]{1}[a-z]+\s[a-z]+', files)
+	species = ''.join(species)
+	#print(species)
+	print "<br>";
+        print "<br>";
+	print'!!NA_SEQUENCE 1.0'
+	print "<br>";
+	print "<br>";
+	print (species + "&nbsp&nbsp&nbsp&nbsp" +  "fau" + "&nbsp&nbsp&nbsp&nbsp" +  "mRNA")
+
+	print "<br>";
+	print ("HSFAU"  + "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp" + "Length : %s") % (length)
+	print ("&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp" + 'Type : N') 
+		
+	splitseq = []
+        max = 10
+
+        for i in range(0,len(seq),10):
+                splitseq.append(seq[i:i+max])
+
+        #print (splitseq)
+	
+	print "<br>";
+        print ("&nbsp&nbsp&nbsp")
+        print '1'
+        print ("&nbsp&nbsp&nbsp")
+        print (splitseq[0] + "&nbsp&nbsp&nbsp" + splitseq[1] + "&nbsp&nbsp&nbsp" + splitseq[2] + "&nbsp&nbsp&nbsp" + splitseq[3] + "&nbsp&nbsp&nbsp" + splitseq[4] + "&nbsp&nbsp&nbsp" + splitseq[5] + "&nbsp&nbsp&nbsp")
+        print "<br>";
+        print ("&nbsp&nbsp&nbsp")
+        print '61'
+        print (splitseq[6] + "&nbsp&nbsp&nbsp" + splitseq[7] + "&nbsp&nbsp&nbsp" + splitseq[8] + "&nbsp&nbsp&nbsp" + splitseq[9] + "&nbsp&nbsp&nbsp" + splitseq[10] + "&nbsp&nbsp&nbsp" + splitseq[11])
+        print ("&nbsp&nbsp&nbsp")
+        print "<br>";
+        print ("&nbsp&nbsp&nbsp")
+        print '121'
+        print (splitseq[12] + "&nbsp&nbsp&nbsp" + splitseq[13] + "&nbsp&nbsp&nbsp" + splitseq[14] + "&nbsp&nbsp&nbsp" + splitseq[15] + "&nbsp&nbsp&nbsp" + splitseq[16] + "&nbsp&nbsp&nbsp" + splitseq[17])
+        print ("&nbsp&nbsp&nbsp")
+        print "<br>";
+        print ("&nbsp&nbsp&nbsp")
+        print '181'
+        print (splitseq[18] + "&nbsp&nbsp&nbsp" + splitseq[19] + "&nbsp&nbsp&nbsp" + splitseq[20] + "&nbsp&nbsp&nbsp" + splitseq[21] + "&nbsp&nbsp&nbsp" + splitseq[22] + "&nbsp&nbsp&nbsp" + splitseq[23])
+        print ("&nbsp&nbsp&nbsp")
+        print "<br>";
+        print ("&nbsp&nbsp&nbsp")
+        print '241'
+        print (splitseq[24] + "&nbsp&nbsp&nbsp" + splitseq[25] + "&nbsp&nbsp&nbsp" + splitseq[26] + "&nbsp&nbsp&nbsp" + splitseq[27] + "&nbsp&nbsp&nbsp" + splitseq[28] )
+
+def gcg2fasta(files):
+	idstr = re.findall (r'(?<=!!).*', files)
+	#print (idstr) 
+	species = re.findall (r'[A-Z]{1}\.[a-z]+', files)
+	#print (species)
+	length = re.findall (r'(Length:\s)([0-9]+)', files)
+	#print (length)
+	seq = re.findall (r'[acgt]{6,10}', files)
+	seq = ''.join(seq)
+	print '<br>';
+	print ('>' + '%s' + '&nbsp&nbsp&nbsp' + '%s') % (''.join(idstr),''.join(species))
+	print '<br>';
+	for i in range (0,len(seq), 60):
+    		print(seq[i:i+60])
+    		print('\n')
+
+
+
+def gcg2genbank(files):
+	idstr = re.findall (r'(?<=!!).*', files)
+        #print (idstr)
+        species = re.findall (r'[A-Z]{1}\.[a-z]+', files)
+        #print (species)
+        seq = re.findall (r'[acgt]{6,10}', files)
+        seq = ''.join(seq)
+	length = len(seq)
+	#print (length)
+
+	print "<br>";
+        print "<br>";
+        print ('LOCUS' + '&nbsp&nbsp&nbsp&nbsp&nbsp' +  '%s' + '&nbsp&nbsp&nbsp&nbsp&nbsp' + '%s' + 'bp') % (''.join(idstr),length)
+        print "<br>";
+        print "<br>";
+	print ('DEFINITION' + '&nbsp&nbsp&nbsp' +  '%s') % (''.join(species))
+	print "<br>";
+        print "<br>";
+
+	
+	splitseq = []
+        max = 10
+
+        for i in range(0,len(seq),10):
+                splitseq.append(seq[i:i+max])
+
+        #print (splitseq)
+
+        print "<br>";
+        print ("&nbsp&nbsp&nbsp")
+        print '1'
+        print ("&nbsp&nbsp&nbsp")
+        print (splitseq[0] + "&nbsp&nbsp&nbsp" + splitseq[1] + "&nbsp&nbsp&nbsp" + splitseq[2] + "&nbsp&nbsp&nbsp" + splitseq[3] + "&nbsp&nbsp&nbsp" + splitseq[4] + "&nbsp&nbsp&nbsp" + splitseq[5] + "&nbsp&nbsp&nbsp")
+        print "<br>";
+        print ("&nbsp&nbsp&nbsp")
+        print '61'
+        print (splitseq[6] + "&nbsp&nbsp&nbsp" + splitseq[7] + "&nbsp&nbsp&nbsp" + splitseq[8] + "&nbsp&nbsp&nbsp" + splitseq[9] + "&nbsp&nbsp&nbsp" + splitseq[10] + "&nbsp&nbsp&nbsp" + splitseq[11])
+        print ("&nbsp&nbsp&nbsp")
+        print "<br>";
+        print ("&nbsp&nbsp&nbsp")
+        print '121'
+        print (splitseq[12] + "&nbsp&nbsp&nbsp" + splitseq[13] + "&nbsp&nbsp&nbsp" + splitseq[14] + "&nbsp&nbsp&nbsp" + splitseq[15] + "&nbsp&nbsp&nbsp" + splitseq[16] + "&nbsp&nbsp&nbsp" + splitseq[17])
+        print ("&nbsp&nbsp&nbsp")
+        print "<br>";
+        print ("&nbsp&nbsp&nbsp")
+        print '181'
+        print (splitseq[18] + "&nbsp&nbsp&nbsp" + splitseq[19] + "&nbsp&nbsp&nbsp" + splitseq[20] + "&nbsp&nbsp&nbsp" + splitseq[21] + "&nbsp&nbsp&nbsp" + splitseq[22] + "&nbsp&nbsp&nbsp" + splitseq[23])
+        print ("&nbsp&nbsp&nbsp")
+        print "<br>";
+        print ("&nbsp&nbsp&nbsp")
+        print '241'
+        print (splitseq[24] + "&nbsp&nbsp&nbsp" + splitseq[25] + "&nbsp&nbsp&nbsp" + splitseq[26] + "&nbsp&nbsp&nbsp" + splitseq[27] + "&nbsp&nbsp&nbsp" + splitseq[28] + "&nbsp&nbsp&nbsp" + splitseq[29] )
+        print "<br>";
+        print "//"
+
+print "Content-type: text/html\r\n\r\n";
+print "<html>";
+print "<head>";
+print "<title>Take Home Test 1 Darvin Sureskumar</title>";
+print "<meta charset=UTF-8>";
+print "<meta name=viewport content=width=device-width, initial-scale=1>";
+print "<link rel=stylesheet href=https://www.w3schools.com/w3css/4/w3.css>";
+print "<link rel=stylesheet href=https://fonts.googleapis.com/css?family=Oswald>";
+print "<link rel=stylesheet href=https://fonts.googleapis.com/css?family=Open Sans>";
+print "<link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css>";
+print "<style>";
+print "body, html {height: 100%;font-family: Inconsolata, sans-serif;}";
+print ".menu {display: none;}";
+print " .header { padding: 60px;text-align: center; color: white;font-size: 30px;font-family: Times New Roman, Times, serif;}";
+print "h1,h2,h3,h4,h5,h6 {font-family: Oswald}";
+print "body {font-family: Open Sans}";
+print "</style>";
+print "</head>";
+
+
+print "<body class=w3-light-grey >";
+
+print """
+        <div class='w3-bar w3-black w3-hide-small'>
+                <a href='#' class='w3-bar-item w3-button'><i class='fa fa-facebook-official'></i></a>
+                <a href='#' class='w3-bar-item w3-button'><i class='fa fa-instagram'></i></a>
+                <a href='#' class='w3-bar-item w3-button'><i class='fa fa-snapchat'></i></a>
+                <a href='#' class='w3-bar-item w3-button'><i class='fa fa-flickr'></i></a>
+                <a href='#' class='w3-bar-item w3-button'><i class='fa fa-twitter'></i></a>
+                <a href='#' class='w3-bar-item w3-button'><i class='fa fa-linkedin'></i></a>
+        </div>
+""";
+
+print "<div align = center >";
+print "<header class=w3-container w3-center w3-padding-48 w3-white>";
+print "<h1 class=w3-xxxlarge><b>File Conversion Guru</b></h1>";
+print "<h6>Welcome to a simpler way to convert <span class=w3-tag>ANY FILE</span></h6>";
+print "</header>";
+print "</div>";
+
+#print (uMoltype)
+#print (files)
+#print(type)
+
+#extract fasta file
+if type == "1":
+	print "You are converting from FASTA file"
+	if uMoltype == "2genbank":
+		answer = fasta2genbank(file)
+	elif uMoltype == "2gcg":
+		answer = fasta2gcg(file)
+
+elif type == "2":
+	print "You are converting from GCG file"
+	if uMoltype == "2fasta":
+		answer = gcg2fasta(files)
+	if uMoltype == "2genbank":
+		answer = gcg2genbank(files)
+
+elif type == "3":
+	print "You are converting from GENBANK file"
+	if uMoltype == "2fasta":
+		answer = genbank2fasta(files)
+	elif uMoltype == "2gcg":
+                answer = genbank2gcg(files)
+	
+else:
+	print'no choice' 
+
+
+
+print "<div align=center>";
+print "<input type=button value=Back onClick=history.go(-1); return true;'>";
+print "<input type=button value=Close onClick='window.close(); return true;'>";
+print "</div>";
+
+print "</body>";
+
+print """
+        <footer class='w3-padding-32 w3-black w3-center w3-margin-top' style='height:30vh'>
+            <h5>Find Us On</h5>
+            <div class='w3-xlarge w3-padding-16'>
+            <i class='fa fa-facebook-official w3-hover-opacity'></i>
+            <i class='fa fa-instagram w3-hover-opacity'></i>
+            <i class='fa fa-snapchat w3-hover-opacity'></i>
+            <i class='fa fa-pinterest-p w3-hover-opacity'></i>
+            <i class='fa fa-twitter w3-hover-opacity'></i>
+            <i class='fa fa-linkedin w3-hover-opacity'></i>
+            </div>
+            <p>Powered by Darvin Sureskumar<a href='https://www.w3schools.com/w3css/default.asp' target='_blank' class='w3-hover-text-green'>
+        </footer>
+""";
+
+
+print "</html>";
+
