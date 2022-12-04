@@ -1,0 +1,121 @@
+<!---- Main page for THT1 DARVIN SURESKUMAR ---->
+<html>
+<head>
+	<title>Take Home Test 1 Darvin Sureskumar</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open Sans">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        
+	<style>
+            body, html {
+              height: 100%;
+              font-family: "Inconsolata", sans-serif;
+            }
+
+            .menu {
+              display: none;
+            }
+		
+	    #content-target{
+	    	align : center;
+	    }	  
+	    
+	    .header {
+ 		 padding: 60px;
+  		text-align: center;
+  		background: #1abc9c;
+  		color: white;
+  		font-size: 30px;
+		font-family: "Times New Roman", Times, serif;
+	    }
+	    h1,h2,h3,h4,h5,h6 {font-family: "Oswald"}
+	    body {font-family: "Open Sans"}
+	
+
+        </style>
+
+</head>
+<body class="w3-light-grey">
+	<!-- Navigation bar with social media icons -->
+	<div class="w3-bar w3-black w3-hide-small">
+  		<a href="#" class="w3-bar-item w3-button"><i class="fa fa-facebook-official"></i></a>
+  		<a href="#" class="w3-bar-item w3-button"><i class="fa fa-instagram"></i></a>
+  		<a href="#" class="w3-bar-item w3-button"><i class="fa fa-snapchat"></i></a>
+  		<a href="#" class="w3-bar-item w3-button"><i class="fa fa-flickr"></i></a>
+  		<a href="#" class="w3-bar-item w3-button"><i class="fa fa-twitter"></i></a>
+  		<a href="#" class="w3-bar-item w3-button"><i class="fa fa-linkedin"></i></a>
+  		<a href="#" class="w3-bar-item w3-button w3-right"><i class="fa fa-search"></i></a>
+	</div>
+  
+	<div class="w3-content" style="max-width:1600px">
+
+  	<!-- Header -->
+  	<header class="w3-container w3-center w3-padding-48 w3-white">
+    		<h1 class="w3-xxxlarge"><b>File Conversion Guru</b></h1>
+    		<h6>Welcome to a simpler way to convert <span class="w3-tag">ANY FILE</span></h6>
+  	</header>
+
+	<div id = mainpart align = center style = "backgroundcolor:black">
+		<table width=50%>
+		<form id = formquery action=/test-cgi/siv3009/darvin/tht1/filetype.cgi method=post>
+			<fieldset align = center>
+				<legend>Please add the file below </legend>
+
+				<textarea id= "content-target" name='file' placeholder = "Add content" rows="10" cols="80" ></textarea>
+				<br>
+				<br>
+				<input type=submit id=run class=button type=submit value=Run onclick='runAnalysis()'>
+				<input type=reset id=reset class=button type=reset value=Reset onclick='location.reload()'>
+				<input type=button id=cancel class=button type=cancel value=Cancel onclick='window.close();return true;'>
+			</fieldset>
+		
+		</form>
+		</table>
+	</div>
+	<footer class="w3-padding-32 w3-black w3-center w3-margin-top" style="height:30vh">
+            <h5>Find Us On</h5>
+            <div class="w3-xlarge w3-padding-16">
+            <i class="fa fa-facebook-official w3-hover-opacity"></i>
+            <i class="fa fa-instagram w3-hover-opacity"></i>
+            <i class="fa fa-snapchat w3-hover-opacity"></i>
+            <i class="fa fa-pinterest-p w3-hover-opacity"></i>
+            <i class="fa fa-twitter w3-hover-opacity"></i>
+            <i class="fa fa-linkedin w3-hover-opacity"></i>
+            </div>
+            <p>Powered by Darvin Sureskumar<a href="https://www.w3schools.com/w3css/default.asp" target="_blank" class="w3-hover-text-green">
+        </footer>
+
+</body>
+
+<script>document.getElementById('input-file')
+        .addEventListener('change', getFile)
+      
+      function getFile(event) {
+          const input = event.target
+        if ('files' in input && input.files.length > 0) {
+            placeFileContent(
+            document.getElementById('content-target'),
+            input.files[0])
+        }
+      }
+      
+      function placeFileContent(target, file) {
+          readFileContent(file).then(content => {
+            target.value = content
+        }).catch(error => console.log(error))
+      }
+      
+      function readFileContent(file) {
+          const reader = new FileReader()
+        return new Promise((resolve, reject) => {
+          reader.onload = event => resolve(event.target.result)
+          reader.onerror = error => reject(error)
+          reader.readAsText(file)
+        })
+      }</script>
+
+</html>
+
